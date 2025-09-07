@@ -1,0 +1,30 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Build / results / generated artifacts
+results/
+*.npz
+*.npy
+*.csv
+*.h5
+*.pkl
+*.log
+
+# OS-specific junk
+.DS_Store
+Thumbs.db
+
+# Editor settings (optional, keep local only)
+.vscode/
+.idea/
+
+# Reports (ignore generated exports, keep .md source)
+reports/*.pdf
+reports/slides/*.pdf
