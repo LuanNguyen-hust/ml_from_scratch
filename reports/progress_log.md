@@ -22,3 +22,12 @@
 - NumPy syntax feels comfortable again.
 - Core building blocks for future models are in place.
 - May need extra guardrails and explicit data type declarations in ops for future tasks.
+
+## Day 2 – Logistic / Softmax Regression
+
+**Tasks Assigned:**
+- Implement **binary cross-entropy (BCE)** and **cross-entropy (CE)** losses in `losses.py`.
+- Train **logistic regression** (binary) and **softmax regression** (multiclass) on MNIST.
+- Run `experiments/logreg_mnist.py`.
+- Target: Achieve **≥88–92% accuracy** on MNIST.
+
