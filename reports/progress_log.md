@@ -31,3 +31,24 @@
 - Run `experiments/logreg_mnist.py`.
 - Target: Achieve **≥88–92% accuracy** on MNIST.
 
+**Tasks Completed (Day 2):**
+- Implemented stable Binary Cross-Entropy (BCE) and Cross-Entropy (CE) with logits, plus gradients
+- Implemented LogisticRegression and SoftmaxRegression in `scratchml/nn.py`
+- Updated `scratchml/data.py` with `filter_digits`, `standardize`, and `split_train_val`
+- Built experiment script `experiments/logreg_mnist.py` (binary vs full MNIST)
+- Ran experiments and validated against acceptance targets **≥88–92% accuracy**
+
+**Results:**
+- Binary Logistic Regression (digits 5 vs 6):
+  - Train acc ≈ 98.7%, Val acc ≈ 97.2%, Test acc ≈ 97.9%
+  - Test loss inflated (≈3.6) due to a few overconfident misclassifications (expected behavior of BCE)
+- Softmax Regression (10-class MNIST):
+  - Train acc ≈ 93.6%, Val acc ≈ 91.7%, Test acc ≈ 92.3%
+
+**Notes:**
+- BCE is very sensitive to confident wrong predictions → high loss despite high acc.
+- Softmax regression is stable and well within target.
+- Preprocessing consistency (standardization with train stats) is critical for correct test results.
+- Ready to proceed to Day 3: implement MLP layers (Linear, ReLU, Sigmoid, Tanh, Dropout) and manual backprop.
+
+

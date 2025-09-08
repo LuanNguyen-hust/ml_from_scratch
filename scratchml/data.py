@@ -6,6 +6,7 @@ from urllib.request import urlretrieve
 MNIST_URL = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
 DEFAULT_CACHE = os.path.expanduser("~/.cache/ml_from_scratch/mnist.npz")
 
+# ---data loader---
 # to modularize loading dataset, allow different optimization to have same preprocess
 def load_moons(n_samples = 200, noise = 0.1, seed = 42, add_bias = True):
     X, y = make_moons(n_samples=n_samples, noise=noise, random_state=seed)
@@ -16,28 +17,6 @@ def load_moons(n_samples = 200, noise = 0.1, seed = 42, add_bias = True):
 
     return X, y
 
-# make sure the download path is correct
-def _ensure_dir(path: str)->None:
-    d = os.path.dirname(path)
-
-    if d and not os.path.exists(d):
-        os.makedirs(d, exist_ok=True)
-
-# to avoid redownloading mnist.npz if already exist
-def _ensure_mnist_npz(cache_path: str = DEFAULT_CACHE, url: str = MNIST_URL) -> str:
-    if os.path.exists(cache_path):
-        return cache_path
-    _ensure_dir(cache_path)
-    print(f"[mnist]downloading to {cache_path} ...")
-    urlretrieve(url, cache_path)
-    return cache_path
-
-# create one hot matrix to support CE computation
-def _one_hot(labels: np.ndarray, num_classes: int = 10) -> np.ndarray:
-    labels = labels.astype(np.int64)
-    oh = np.zeros((labels.shape[0], num_classes), dtype=np.float32)
-    oh[np.arange(labels.shape[0]), labels] = 1.0
-    return oh
 
 def load_mnist(split: str = "train",
                flatten: bool = True,
@@ -82,8 +61,35 @@ def load_mnist(split: str = "train",
 
     return X, y
 
-import numpy as np
+# ---loader helpers---
 
+# make sure the download path is correct
+def _ensure_dir(path: str)->None:
+    d = os.path.dirname(path)
+
+    if d and not os.path.exists(d):
+        os.makedirs(d, exist_ok=True)
+
+# to avoid redownloading mnist.npz if already exist
+def _ensure_mnist_npz(cache_path: str = DEFAULT_CACHE, url: str = MNIST_URL) -> str:
+    if os.path.exists(cache_path):
+        return cache_path
+    _ensure_dir(cache_path)
+    print(f"[mnist]downloading to {cache_path} ...")
+    urlretrieve(url, cache_path)
+    return cache_path
+
+
+# ---helper functions---
+
+# create one hot matrix to support CE computation
+def _one_hot(labels: np.ndarray, num_classes: int = 10) -> np.ndarray:
+    labels = labels.astype(np.int64)
+    oh = np.zeros((labels.shape[0], num_classes), dtype=np.float32)
+    oh[np.arange(labels.shape[0]), labels] = 1.0
+    return oh
+
+# creating binary subset
 def filter_digits(X: np.ndarray, y: np.ndarray, digits=(0, 1)):
     """
     Keep only samples from `digits` and map labels to {0,1} by the order in `digits`.
@@ -110,3 +116,18 @@ def filter_digits(X: np.ndarray, y: np.ndarray, digits=(0, 1)):
     y_bin = (y_sub == digits[1]).astype(np.int64)
     return X_sub, y_bin
 
+
+def standardize(X):
+    X01 = X if X.max() <= 1.0 + 1e-6 else X / 255.0
+    mu  = X01.mean(axis=0, keepdims=True)
+    sd  = X01.std(axis=0, keepdims=True) + 1e-6
+    return (X01 - mu) / sd, mu, sd
+
+# splite the data set into train and test set
+def split_train_val(X, y, val_ratio=0.1, seed=42):
+    rng = np.random.default_rng(seed)
+    N = X.shape[0]
+    idx = np.arange(N); rng.shuffle(idx)
+    nval = int(N * val_ratio)
+    vidx, tidx = idx[:nval], idx[nval:]
+    return X[tidx], y[tidx], X[vidx], y[vidx]
