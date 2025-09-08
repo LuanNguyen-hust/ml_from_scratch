@@ -81,3 +81,32 @@ def load_mnist(split: str = "train",
         y = _one_hot(y, num_classes=10)  # float32 (N, 10)
 
     return X, y
+
+import numpy as np
+
+def filter_digits(X: np.ndarray, y: np.ndarray, digits=(0, 1)):
+    """
+    Keep only samples from `digits` and map labels to {0,1} by the order in `digits`.
+      - digits[0] -> 0
+      - digits[1] -> 1
+    Works if y is (N,) ints or (N,10) one-hot.
+
+    Returns:
+        X_sub: filtered inputs
+        y_bin: int64 labels in {0,1} with shape (M,)
+    """
+    # Convert one-hot labels to class indices if needed
+    if y.ndim == 2:
+        y_idx = np.argmax(y, axis=1)
+    else:
+        y_idx = y
+
+    # Mask rows that are either of the two requested digits
+    mask = np.isin(y_idx, digits)
+    X_sub = X[mask]
+    y_sub = y_idx[mask]
+
+    # Deterministic mapping based on the order in `digits`
+    y_bin = (y_sub == digits[1]).astype(np.int64)
+    return X_sub, y_bin
+
