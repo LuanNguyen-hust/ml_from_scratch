@@ -51,4 +51,10 @@
 - Preprocessing consistency (standardization with train stats) is critical for correct test results.
 - Ready to proceed to Day 3: implement MLP layers (Linear, ReLU, Sigmoid, Tanh, Dropout) and manual backprop.
 
+## Day 3 — MLP (Manual Backprop)
 
+**Tasks Assigned:**
+- Implement **Linear**, **ReLU**, **Sigmoid**, **Tanh**, **Dropout** layers.
+- Build **Sequential container** with manual forward/backward support.
+- Train **MLP on MNIST**: architecture [784 → 256 → 128 → 10].
+- Run experiments and log metrics.
